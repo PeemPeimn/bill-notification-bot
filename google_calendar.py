@@ -5,13 +5,7 @@ from google.oauth2 import service_account
 from googleapiclient.discovery import build
 
 
-class Event:
-    summary: str
-    description: str
-    start_date: str
-
-
-def get_event() -> Event:
+def get_event_text() -> str:
     load_dotenv(".env", override=True)
 
     SERVICE_ACCOUNT_FILE = os.getenv("SERVICE_ACCOUNT_FILE")
@@ -42,13 +36,14 @@ def get_event() -> Event:
     if len(events) == 0:
         raise LookupError("No events found.")
 
-    event = Event()
-    event.summary = events[0]["summary"]
-    event.description = events[0]["description"]
-    event.start_date = events[0]["start"]["date"]
+    summary = events[0]["summary"]
+    description = events[0]["description"]
+    start_date = events[0]["start"]["date"]
 
-    return event
+    text = "\n\n".join([summary + f" ({start_date})", description])
+
+    return text
 
 
 if __name__ == "__main__":
-    get_event()
+    print(get_event_text())
